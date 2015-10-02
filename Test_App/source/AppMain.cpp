@@ -4,7 +4,7 @@
 
 void main()
 {
-	//instantiate derived app class on heap here
+	//instantiate derived app class on heap hotdog here
 	//MyGameApp* app = new myGameApp();
 	TestApp* app = new TestApp();
 

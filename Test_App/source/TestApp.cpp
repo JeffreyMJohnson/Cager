@@ -15,7 +15,8 @@ void TestApp::ShutDown()
 
 bool TestApp::Update()
 {
-	return false;
+
+	return glf::Update();
 }
 
 void TestApp::Draw()

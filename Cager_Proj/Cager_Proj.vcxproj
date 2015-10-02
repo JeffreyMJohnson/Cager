@@ -142,10 +142,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Cager.h" />
+    <ClInclude Include="include\input\Keyboard.h" />
+    <ClInclude Include="include\input\Mouse.h" />
     <ClInclude Include="include\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Cager.cpp" />
+    <ClCompile Include="source\gl_core\gl_core_4_4.c" />
+    <ClCompile Include="source\input\Keyboard.cpp" />
+    <ClCompile Include="source\input\Mouse.cpp" />
     <ClCompile Include="source\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

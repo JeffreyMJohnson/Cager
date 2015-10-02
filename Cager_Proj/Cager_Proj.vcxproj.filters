@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\input">
+      <UniqueIdentifier>{827d10d9-cfba-4bf6-83c3-dbf66c5373a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\input">
+      <UniqueIdentifier>{492a8df4-9ec9-498a-88af-36de632607df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gl_core">
+      <UniqueIdentifier>{30754adf-a635-4619-a982-9e4e9fd23bc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Cager.h">
@@ -21,6 +30,12 @@
     <ClInclude Include="include\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\input\Keyboard.h">
+      <Filter>Header Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\input\Mouse.h">
+      <Filter>Header Files\input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Cager.cpp">
@@ -28,6 +43,15 @@
     </ClCompile>
     <ClCompile Include="source\Window.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\input\Mouse.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="source\input\Keyboard.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gl_core\gl_core_4_4.c">
+      <Filter>Source Files\gl_core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

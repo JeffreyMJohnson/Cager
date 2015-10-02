@@ -11,6 +11,7 @@ public:
 	uint mWidth = 0;
 	uint mHeight = 0;
 	const char* mTitle;
+	glm::vec4 mClearColor;
 
 	bool Init(const char* title, const uint width, const uint height);
 	void Destroy();
