@@ -36,6 +36,9 @@
     <ClInclude Include="include\input\Mouse.h">
       <Filter>Header Files\input</Filter>
     </ClInclude>
+    <ClInclude Include="include\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Cager.cpp">
@@ -52,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="source\gl_core\gl_core_4_4.c">
       <Filter>Source Files\gl_core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Shader.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

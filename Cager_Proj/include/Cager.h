@@ -10,6 +10,7 @@
 
 #include "Window.h"
 #include "input\Keyboard.h"
+#include "Shader.h"
 
 using glm::vec3;
 using glm::vec4;
