@@ -22,6 +22,9 @@
     <Filter Include="Source Files\gl_core">
       <UniqueIdentifier>{30754adf-a635-4619-a982-9e4e9fd23bc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\shaders">
+      <UniqueIdentifier>{2ba3adfc-216c-4385-be9d-332ab1668f8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Cager.h">
@@ -59,5 +62,13 @@
     <ClCompile Include="source\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source\shaders\Frag.glsl">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="source\shaders\Vert.glsl">
+      <Filter>Source Files\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
