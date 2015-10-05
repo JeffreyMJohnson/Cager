@@ -1,37 +1,29 @@
 #include "Cager.h"
 
-Window Cager::sWindow;
+const char* Cager::VERTEX_SHADER_PATH = "Vert.glsl";
+const char* Cager::FRAGMENT_SHADER_PATH = "Frag.glsl";
+uint Cager::shader = 0;
+uint Cager::mainWindow = 0;
 
 bool Cager::Init(const int width, const int height, const char * title, const vec4 clearColor)
 {
-	bool success = true;
-	//init glfw
-	success = glfwInit();
-	if (!success)
-		return success;
 
-	//init window
-	success = sWindow.Init(title, width, height);
-	if (!success)
+	//init assman
+	bool success = AssMan::Init();
+	
+	//create main window
+	if (!(mainWindow = AssMan::CreateContext(width, height, title)))
 	{
-		Destroy();
-		return success;
+		Cager::Destroy();
+		return false;
 	}
 
-	//set context
-	glfwMakeContextCurrent(sWindow.mHandle);
-
-	//load extensions
-	success = ogl_LoadFunctions() != ogl_LOAD_FAILED;
-	if (!success)
+	//Init shader
+	if (!(shader = AssMan::CreateShader(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)))
 	{
-		Destroy();
-		return success;
+		Cager::Destroy();
+		return false;
 	}
-
-	//set clear color
-	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-
 
 	//init keyboard input
 	Keyboard::Init();
@@ -41,20 +33,18 @@ bool Cager::Init(const int width, const int height, const char * title, const ve
 
 bool Cager::Update()
 {
-	if (glfwWindowShouldClose(sWindow.mHandle) || Keyboard::IsKeyPressed(Keyboard::KEY_ESCAPE))
+	if (AssMan::ContextShouldClose(mainWindow) || Keyboard::IsKeyPressed(Keyboard::KEY_ESCAPE))
 		return false;
+	//set clear color
+	//glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glfwSwapBuffers(sWindow.mHandle);
+	glfwSwapBuffers(AssMan::GetContextHandle(mainWindow));
 	glfwPollEvents();
 	return true;
 }
 
 void Cager::Destroy()
 {
-	if (sWindow.mHandle)
-	{
-		sWindow.Destroy();
-	}
-	glfwTerminate();
+	AssMan::Kill();
 }

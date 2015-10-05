@@ -42,6 +42,9 @@
     <ClInclude Include="include\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\AssMan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Cager.cpp">
@@ -60,6 +63,9 @@
       <Filter>Source Files\gl_core</Filter>
     </ClCompile>
     <ClCompile Include="source\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AssMan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
