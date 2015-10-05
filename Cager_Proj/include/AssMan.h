@@ -43,6 +43,7 @@ public:
 	//create
 	static uint CreateContext(const uint windowWidth, const uint windowHeight, const char* windowTitle);
 	static glm::vec2 GetContextSize(uint windowID);
+	static void SetCurrentContext(uint windowID);
 
 	//this is temkp for refactor should be rempoved
 	static GLFWwindow* GetContextHandle(uint windowID);

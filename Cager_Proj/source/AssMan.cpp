@@ -6,7 +6,15 @@ std::vector<Window*> AssMan::windows{ nullptr };
 
 bool AssMan::Init()
 {
-	return true;
+	//init glfw
+	bool success = glfwInit();
+	if (!success)
+	{
+		std::cout << "Error initializing GLFW.\n";
+		return success;
+	}
+
+	return success;
 }
 
 void AssMan::Kill()
@@ -45,8 +53,24 @@ uint AssMan::CreateContext(const uint windowWidth, const uint windowHeight, cons
 		delete window;
 		return 0;
 	}
+
+	//context must be set before callingf ogl_loadfunctions
+	glfwMakeContextCurrent(window->handle);
+
+	if (ogl_LoadFunctions() == ogl_LOAD_FAILED)
+	{
+		std::cout << "Error loading ogl.\n";
+		delete window;
+		return 0;
+	}
+
 	windows.push_back(window);
 	return windows.size() - 1;
+}
+
+void AssMan::SetCurrentContext(uint windowID)
+{
+	glfwMakeContextCurrent(windows[windowID]->handle);
 }
 
 GLFWwindow * AssMan::GetContextHandle(uint windowID)

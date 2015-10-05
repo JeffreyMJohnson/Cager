@@ -41,8 +41,6 @@ private:
 
 	static const char* VERTEX_SHADER_PATH;
 	static const char* FRAGMENT_SHADER_PATH;
-	static Window sWindow;
-	//static Shader sShader;
 	static uint shader;
 	static uint mainWindow;
 };
