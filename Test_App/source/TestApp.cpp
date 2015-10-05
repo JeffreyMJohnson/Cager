@@ -8,7 +8,7 @@ bool TestApp::StartUp()
 {
 	bool success = glf::Init(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, glm::vec4(.75f, .75f, 0, 1));
 	//
-	return true;
+	return success;
 }
 
 void TestApp::ShutDown()

@@ -1,17 +1,13 @@
 #include "AssMan.h"
 //have null for first index because it's error number.
 std::vector<Shader*> AssMan::shaders{ nullptr };
-Window* AssMan::window = new Window();
+std::vector<Window*> AssMan::windows{ nullptr };
 
-//uint AssMan::CreateAsset(Asset_Type type)
-//{
-//	switch (type)
-//	{
-//	case SHADER:
-//		
-//	}
-//	return uint();
-//}
+
+bool AssMan::Init()
+{
+	return true;
+}
 
 void AssMan::Kill()
 {
@@ -25,18 +21,42 @@ void AssMan::Kill()
 		delete shaders[i];
 	}
 	shaders.clear();
+
+	//kill windows list
+	//skip the first cell, it's null
+	for (int i = 1; i < windows.size(); i++)
+	{
+		glfwDestroyWindow(windows[i]->handle);
+		//delete from heap
+		delete windows[i];
+	}
+	windows.clear();
+
+	glfwTerminate();
 }
 
 uint AssMan::CreateContext(const uint windowWidth, const uint windowHeight, const char * windowTitle)
 {
+	Window* window = new Window();
 	window->handle = glfwCreateWindow(windowWidth, windowHeight, windowTitle, nullptr, nullptr);
 	if (window->handle == nullptr)
 	{
 		std::cout << "Error creating context window\n";
+		delete window;
 		return 0;
 	}
+	windows.push_back(window);
+	return windows.size() - 1;
+}
 
-	return uint();
+GLFWwindow * AssMan::GetContextHandle(uint windowID)
+{
+	return windows[windowID]->handle;
+}
+
+bool AssMan::ContextShouldClose(uint windowID)
+{
+	return glfwWindowShouldClose(windows[windowID]->handle);
 }
 
 /*

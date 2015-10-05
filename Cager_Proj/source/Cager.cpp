@@ -5,27 +5,29 @@ const char* Cager::FRAGMENT_SHADER_PATH = "Frag.glsl";
 //Window Cager::sWindow;
 //Shader Cager::sShader;
 uint Cager::shader = 0;
-uint Cager::window = 0;
+uint Cager::mainWindow = 0;
 
 bool Cager::Init(const int width, const int height, const char * title, const vec4 clearColor)
 {
-	bool success = true;
+
+
+	//bool success = AssMan::Init();
 	//init glfw
-	success = glfwInit();
+	bool success = glfwInit();
 	if (!success)
 		return success;
 
 	//init window
 	//success = sWindow.Init(title, width, height);
-	
-	if (!success)
+	;
+	if (!(mainWindow = AssMan::CreateContext(width, height, title)))
 	{
 		Destroy();
-		return success;
+		return false;
 	}
 
 	//set context
-	//glfwMakeContextCurrent(sWindow.mHandle);
+	glfwMakeContextCurrent(AssMan::GetContextHandle(mainWindow));
 
 	//load extensions
 	success = ogl_LoadFunctions() != ogl_LOAD_FAILED;
@@ -54,20 +56,17 @@ bool Cager::Init(const int width, const int height, const char * title, const ve
 
 bool Cager::Update()
 {
-	if (glfwWindowShouldClose(sWindow.mHandle) || Keyboard::IsKeyPressed(Keyboard::KEY_ESCAPE))
+	if (AssMan::ContextShouldClose(mainWindow) || Keyboard::IsKeyPressed(Keyboard::KEY_ESCAPE))
 		return false;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glfwSwapBuffers(sWindow.mHandle);
+
+	glfwSwapBuffers(AssMan::GetContextHandle(mainWindow));
 	glfwPollEvents();
 	return true;
 }
 
 void Cager::Destroy()
 {
-	if (sWindow.mHandle)
-	{
-		sWindow.Destroy();
-	}
-	glfwTerminate();
+	AssMan::Kill();
 }
