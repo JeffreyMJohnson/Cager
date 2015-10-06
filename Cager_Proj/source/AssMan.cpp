@@ -1,7 +1,8 @@
 #include "AssMan.h"
 //have null for first index because it's error number.
 std::vector<Shader*> AssMan::shaders{ nullptr };
-std::vector<Window*> AssMan::windows{ nullptr };
+std::vector<Context*> AssMan::windows{ nullptr };
+std::vector<RenderObject*> AssMan::renderObjects{ nullptr };
 
 
 bool AssMan::Init()
@@ -17,6 +18,18 @@ bool AssMan::Init()
 	return success;
 }
 
+void AssMan::Flip(uint context)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glfwSwapBuffers(windows[context]->handle);
+}
+
+void AssMan::Update()
+{
+	glfwPollEvents();
+}
+
 void AssMan::Kill()
 {
 	//kill shaders list
@@ -24,7 +37,7 @@ void AssMan::Kill()
 	for (int i = 1; i < shaders.size(); i++)
 	{
 		//free the shader program
-		glDeleteShader(shaders[i]->programHandle);
+		glDeleteShader(shaders[i]->handle);
 		//delete from heap
 		delete shaders[i];
 	}
@@ -40,12 +53,25 @@ void AssMan::Kill()
 	}
 	windows.clear();
 
+	//kill renderobject list
+	//skip the first cell, it's null
+	for (int i = 1; i < renderObjects.size(); i++)
+	{
+		glDeleteBuffers(1, &renderObjects[i]->vbo);
+		glDeleteBuffers(1, &renderObjects[i]->ibo);
+		glDeleteVertexArrays(1, &renderObjects[i]->vao);
+		//delete from heap
+		delete renderObjects[i];
+	}
+	renderObjects.clear();
+
 	glfwTerminate();
+
 }
 
 uint AssMan::CreateContext(const uint windowWidth, const uint windowHeight, const char * windowTitle)
 {
-	Window* window = new Window();
+	Context* window = new Context();
 	window->handle = glfwCreateWindow(windowWidth, windowHeight, windowTitle, nullptr, nullptr);
 	if (window->handle == nullptr)
 	{
@@ -65,12 +91,73 @@ uint AssMan::CreateContext(const uint windowWidth, const uint windowHeight, cons
 	}
 
 	windows.push_back(window);
+
+	//this should be refactored to proerties of render targets
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glEnable(GL_DEPTH_TEST);
+
 	return windows.size() - 1;
+}
+
+void AssMan::SetContextClearColor(uint context, glm::vec4 color)
+{
+	SetCurrentContext(context);
+	glClearColor(color.r, color.g, color.b, color.a);
+
 }
 
 void AssMan::SetCurrentContext(uint windowID)
 {
 	glfwMakeContextCurrent(windows[windowID]->handle);
+}
+
+uint AssMan::CreateRenderObject(Geometry& geometry)
+{
+	RenderObject* rendObj = new RenderObject();
+	//create / bind vao
+	glGenVertexArrays(1, &rendObj->vao);
+	glBindVertexArray(rendObj->vao);
+
+	rendObj->indexCount = geometry.indices.size();
+
+	//create,  bind and load vbo
+	glGenBuffers(1, &rendObj->vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, rendObj->vbo);
+	glBufferData(GL_ARRAY_BUFFER, geometry.vertices.size() * sizeof(Vertex), geometry.vertices.data(), GL_STATIC_DRAW);
+
+	//create, bind, fill ibo
+	glGenBuffers(1, &rendObj->ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendObj->ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, geometry.indices.size() * sizeof(uint), geometry.indices.data(), GL_STATIC_DRAW);
+
+	//set up attribs
+	glEnableVertexAttribArray(0);//position
+	glEnableVertexAttribArray(1);//color in shader right now.
+	glEnableVertexAttribArray(2);//normal
+	glEnableVertexAttribArray(3);//tangent
+	glEnableVertexAttribArray(4);//UV coord
+
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 1));
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 2));
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 3));
+	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 4));
+
+	//cleanup
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	renderObjects.push_back(rendObj);
+
+	return renderObjects.size() - 1;
+}
+
+void AssMan::DrawRenderObject(uint objectID)
+{
+	glBindVertexArray(renderObjects[objectID]->vao);
+	glDrawElements(GL_TRIANGLES, renderObjects[objectID]->indexCount, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }
 
 GLFWwindow * AssMan::GetContextHandle(uint windowID)
@@ -83,9 +170,7 @@ bool AssMan::ContextShouldClose(uint windowID)
 	return glfwWindowShouldClose(windows[windowID]->handle);
 }
 
-/*
-return of 0 is error.
-*/
+
 const uint AssMan::CreateShader(const char * vertexPath, const char * fragmentPath)
 {
 	using namespace std;
@@ -123,7 +208,7 @@ const uint AssMan::CreateShader(const char * vertexPath, const char * fragmentPa
 		return success;
 	}
 	Shader* s = new Shader();
-	s->programHandle = shaderProgram;
+	s->handle = shaderProgram;
 	shaders.push_back(s);
 
 	//think this should be refactored out..
@@ -131,12 +216,10 @@ const uint AssMan::CreateShader(const char * vertexPath, const char * fragmentPa
 	return shaders.size() - 1;
 }
 
-/*
-returns the shader program handle of given shader id.
-*/
+
 const uint AssMan::GetShaderProgram(const uint shader)
 {
-	return shaders[shader]->programHandle;
+	return shaders[shader]->handle;
 }
 
 
@@ -172,7 +255,7 @@ uint AssMan::LoadSubShader(uint shaderType, const char * path)
 		delete[] log;
 	}
 
-	
+
 
 	if (!success)
 	{
