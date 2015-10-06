@@ -20,9 +20,10 @@ bool AssMan::Init()
 
 void AssMan::Flip(uint context)
 {
+	glfwSwapBuffers(windows[context]->handle);
+	//clear the buffer after the swap or nothing will paint!
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
-	glfwSwapBuffers(windows[context]->handle);
 }
 
 void AssMan::Update()
@@ -155,6 +156,7 @@ uint AssMan::CreateRenderObject(Geometry& geometry)
 
 void AssMan::DrawRenderObject(uint objectID)
 {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBindVertexArray(renderObjects[objectID]->vao);
 	glDrawElements(GL_TRIANGLES, renderObjects[objectID]->indexCount, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
@@ -176,13 +178,13 @@ const uint AssMan::CreateShader(const char * vertexPath, const char * fragmentPa
 	using namespace std;
 
 	uint vertex = LoadSubShader(GL_VERTEX_SHADER, vertexPath);
-	if (vertex)
+	if (!vertex)
 	{
 		return vertex;
 	}
 
 	uint fragment = LoadSubShader(GL_FRAGMENT_SHADER, fragmentPath);
-	if (fragment)
+	if (!fragment)
 	{
 		return fragment;
 	}
@@ -216,6 +218,33 @@ const uint AssMan::CreateShader(const char * vertexPath, const char * fragmentPa
 	return shaders.size() - 1;
 }
 
+void AssMan::SetShaderUniform(uint shaderID, const char * name, const UniformType type, const void * value)
+{
+
+	GLint location = glGetUniformLocation(shaders[shaderID]->handle, name);
+	switch (type)
+	{
+	case MAT4:
+		glUniformMatrix4fv(location, 1, false, (const GLfloat*)value);
+		break;
+	case VEC4:
+		glUniform4fv(location, 1, (GLfloat*)value);
+		break;
+	case VEC3:
+		glUniform3fv(location, 1, (GLfloat*)value);
+		break;
+	case FLO1:
+		glUniform1f(location, *(GLfloat*)value);
+		break;
+	case INT1:
+		glUniform1i(location, *(GLint*)value);
+		break;
+	case UINT1:
+		glUniform1ui(location, *(GLuint*)value);
+		break;
+	}
+}
+
 
 const uint AssMan::GetShaderProgram(const uint shader)
 {
@@ -228,6 +257,11 @@ uint AssMan::LoadSubShader(uint shaderType, const char * path)
 {
 	std::ifstream stream(path);
 	std::string contents = std::string(std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>());
+	if (contents.size() == 0)
+	{
+		printf("Error loading shader file %s\nThere is nothing there.\n", path);
+		return 0;
+	}
 	char* code = new char[contents.length() + 1];
 	strncpy_s(code, contents.length() + 1, contents.c_str(), contents.length());
 

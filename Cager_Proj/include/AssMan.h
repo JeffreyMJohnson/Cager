@@ -12,6 +12,16 @@
 
 typedef unsigned int uint;
 
+enum UniformType
+{
+	MAT4,
+	VEC4,
+	VEC3,
+	FLO1,
+	INT1,
+	UINT1
+};
+
 struct Shader
 {
 	uint handle = 0;
@@ -97,6 +107,11 @@ public:
 	NOTE: returns 0 if an error occurs.
 	*/
 	static const uint CreateShader(const char * vertexPath, const char * fragmentPath);
+
+	/*
+	Set the uniform in given shader to variable matching given name with given value.
+	*/
+	static void SetShaderUniform(uint shaderID, const char* name, const UniformType type, const void* value);
 
 	/*
 	returns the shader program handle of given shader id.

@@ -12,6 +12,7 @@
 #include "input\Keyboard.h"
 //#include "Shader.h"
 #include "AssMan.h"
+#include "camera\Camera.h"
 
 using glm::vec3;
 using glm::vec4;
@@ -20,7 +21,8 @@ using glm::vec4;
 
 struct GameObject
 {
-	uint renderObject;
+	uint renderObject = 0;
+	bool wireFrame = false;
 };
 
 
@@ -31,7 +33,7 @@ public:
 	This is the structure that any vertice data must conform to for the framework to be able to
 	consume and use it. This is exposed to the user.
 	*/
-	
+
 
 	static bool Init(const int width, const int height, const char * title, const vec4 clearColor);
 	static bool Update();
@@ -59,4 +61,5 @@ private:
 	static uint shader;
 	static uint mainWindow;
 	static std::vector<GameObject*> gameObjects;
+	static Camera* camera;
 };

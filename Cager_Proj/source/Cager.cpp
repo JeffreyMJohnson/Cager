@@ -1,10 +1,11 @@
 #include "Cager.h"
 
-const char* Cager::VERTEX_SHADER_PATH = "Vert.glsl";
-const char* Cager::FRAGMENT_SHADER_PATH = "Frag.glsl";
+const char* Cager::VERTEX_SHADER_PATH = "../Cager_Proj/source/shaders/Vert.glsl";
+const char* Cager::FRAGMENT_SHADER_PATH = "../Cager_Proj/source/shaders/Frag.glsl";
 uint Cager::shader = 0;
 uint Cager::mainWindow = 0;
 std::vector<GameObject*> Cager::gameObjects{ nullptr };
+Camera* Cager::camera = new Camera();
 
 bool Cager::Init(const int width, const int height, const char * title, const vec4 clearColor)
 {
@@ -29,6 +30,19 @@ bool Cager::Init(const int width, const int height, const char * title, const ve
 
 	//init keyboard input
 	Keyboard::Init();
+
+	//init camera for now
+	const float CAMERA_FOV = glm::pi<float>() * .25f;
+	const float CAMERA_NEAR = .1f;
+	const float CAMERA_FAR = 1000.0f;
+	const vec3 CAMERA_FROM = vec3(10, 25, 30);
+	const vec3 CAMERA_TO = vec3(10,0,0);
+	const vec3 CAMERA_UP = vec3(0, 0, -1);
+	camera->StartupPerspective(CAMERA_FOV, (float)width / height, CAMERA_NEAR, CAMERA_FAR);
+	camera->SetView(CAMERA_FROM, CAMERA_TO, CAMERA_UP);
+	//send uniform to shader now, will need to move to update for flycam.
+	AssMan::SetShaderUniform(shader, "ProjectionView", MAT4, glm::value_ptr(camera->GetViewProjection()));
+	//sShader->SetUniform("ProjectionView", Shader::MAT4, glm::value_ptr(sCamera->GetViewProjection()));
 
 	return success;
 }
