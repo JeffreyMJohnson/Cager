@@ -12,10 +12,18 @@
 #include "input\Keyboard.h"
 //#include "Shader.h"
 #include "AssMan.h"
+#include "camera\Camera.h"
 
 using glm::vec3;
 using glm::vec4;
 
+
+
+struct GameObject
+{
+	uint renderObject = 0;
+	bool wireFrame = false;
+};
 
 
 class Cager
@@ -25,22 +33,33 @@ public:
 	This is the structure that any vertice data must conform to for the framework to be able to
 	consume and use it. This is exposed to the user.
 	*/
-	struct Vertex
-	{
-		glm::vec4 position;
-		glm::vec4 color;
-		glm::vec4 normal;
-		glm::vec4 tangent;
-		glm::vec2 UV;
-	};
+
 
 	static bool Init(const int width, const int height, const char * title, const vec4 clearColor);
 	static bool Update();
+	/*
+	Call after drawing all objects in frame and want to render the frame.
+	*/
+	static void DrawFrame();
 	static void Destroy();
+
+	static void DrawGameObject(const uint objectID);
+
+	/*
+	Creates a 2D grid of given rows and cols, with center positioned at origin.
+	returns unique ID to gameobject for reference
+	*/
+	static uint CreateGrid(const int rows, const int cols);
+
+
 private:
+
+
 
 	static const char* VERTEX_SHADER_PATH;
 	static const char* FRAGMENT_SHADER_PATH;
 	static uint shader;
 	static uint mainWindow;
+	static std::vector<GameObject*> gameObjects;
+	static Camera* camera;
 };

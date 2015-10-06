@@ -16,4 +16,7 @@ public:
 	bool Update();
 	void Draw();
 
+private:
+	uint grid;
+
 };

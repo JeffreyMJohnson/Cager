@@ -145,19 +145,17 @@
   <ItemGroup>
     <ClInclude Include="include\AssMan.h" />
     <ClInclude Include="include\Cager.h" />
+    <ClInclude Include="include\camera\Camera.h" />
     <ClInclude Include="include\input\Keyboard.h" />
     <ClInclude Include="include\input\Mouse.h" />
-    <ClInclude Include="include\Shader.h" />
-    <ClInclude Include="include\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AssMan.cpp" />
     <ClCompile Include="source\Cager.cpp" />
+    <ClCompile Include="source\camera\Camera.cpp" />
     <ClCompile Include="source\gl_core\gl_core_4_4.c" />
     <ClCompile Include="source\input\Keyboard.cpp" />
     <ClCompile Include="source\input\Mouse.cpp" />
-    <ClCompile Include="source\Shader.cpp" />
-    <ClCompile Include="source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="source\shaders\Frag.glsl" />

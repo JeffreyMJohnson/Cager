@@ -30,27 +30,21 @@
     <ClInclude Include="include\Cager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\input\Keyboard.h">
       <Filter>Header Files\input</Filter>
     </ClInclude>
     <ClInclude Include="include\input\Mouse.h">
       <Filter>Header Files\input</Filter>
     </ClInclude>
-    <ClInclude Include="include\Shader.h">
+    <ClInclude Include="include\AssMan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\AssMan.h">
+    <ClInclude Include="include\camera\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Cager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\input\Mouse.cpp">
@@ -62,10 +56,10 @@
     <ClCompile Include="source\gl_core\gl_core_4_4.c">
       <Filter>Source Files\gl_core</Filter>
     </ClCompile>
-    <ClCompile Include="source\Shader.cpp">
+    <ClCompile Include="source\AssMan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\AssMan.cpp">
+    <ClCompile Include="source\camera\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
