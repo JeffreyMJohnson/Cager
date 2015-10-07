@@ -39,10 +39,7 @@ bool Cager::Init(const int width, const int height, const char * title, const ve
 	const vec3 CAMERA_TO = vec3(10,0,0);
 	const vec3 CAMERA_UP = vec3(0, 0, -1);
 	camera->StartupPerspective(CAMERA_FOV, (float)width / height, CAMERA_NEAR, CAMERA_FAR);
-	camera->SetView(CAMERA_FROM, CAMERA_TO, CAMERA_UP);
-	//send uniform to shader now, will need to move to update for flycam.
-	AssMan::SetShaderUniform(shader, "ProjectionView", MAT4, glm::value_ptr(camera->GetViewProjection()));
-	//sShader->SetUniform("ProjectionView", Shader::MAT4, glm::value_ptr(sCamera->GetViewProjection()));
+	camera->SetView(CAMERA_FROM, CAMERA_TO, CAMERA_UP);	
 
 	return success;
 }
@@ -51,7 +48,12 @@ bool Cager::Update()
 {
 	if (AssMan::ContextShouldClose(mainWindow) || Keyboard::IsKeyPressed(Keyboard::KEY_ESCAPE))
 		return false;
-
+	UpdateFlyCam();
+	AssMan::SetShaderUniform(shader, "ProjectionView", MAT4, glm::value_ptr(camera->GetViewProjection()));
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_1))
+	{
+		gameObjects[1]->wireFrame = !gameObjects[1]->wireFrame;
+	}
 	AssMan::Update();
 	return true;
 }
@@ -76,7 +78,7 @@ void Cager::Destroy()
 
 void Cager::DrawGameObject(const uint objectID)
 {
-	AssMan::DrawRenderObject(gameObjects[objectID]->renderObject);
+	AssMan::DrawRenderObject(gameObjects[objectID]->renderObject, gameObjects[objectID]->wireFrame);
 }
 
 uint Cager::CreateGrid(const int rows, const int cols)
@@ -120,4 +122,143 @@ uint Cager::CreateGrid(const int rows, const int cols)
 	gameObj->renderObject = AssMan::CreateRenderObject(geometry);
 	gameObjects.push_back(gameObj);
 	return gameObjects.size() - 1;
+}
+
+uint Cager::CreateGameObjectFromFile(const char * path)
+{
+	/*
+	bool success = true;
+	//find extension
+	std::string sPath(path);
+	std::string ext = sPath.substr(sPath.find_last_of('.'));
+
+	Geometry geometry;
+
+	if (ext == ".obj")
+	{
+		std::vector<tinyobj::shape_t> shapes;
+		std::vector<tinyobj::material_t> materials;
+		std::string err = tinyobj::LoadObj(shapes, materials, path);
+		if (err.length() != 0)
+		{
+			std::cout << "Error loading OBJ file:\n" << err << std::endl;
+			success = false;
+		}
+
+		//hard coding only using first shape, can change to loop here
+		if (success)
+		{
+			auto shape = shapes[0];
+			auto mesh = shape.mesh;
+
+			geometry.vertices.resize(mesh.positions.size());
+
+			uint posIndex = 0;
+			uint normalIndex = 0;
+			uint UVIndex = 0;
+			bool hasNormals = mesh.normals.size() == mesh.positions.size();
+			bool hasUVs = mesh.texcoords.size() == mesh.positions.size();
+			//obj has vectors of floats, my struct and shaders uses glm vecs so need to build myself
+			for (uint vertexCount = 0; posIndex < mesh.positions.size(); vertexCount++)
+			{
+				float x = mesh.positions[posIndex++];
+				float y = mesh.positions[posIndex++];
+				float z = mesh.positions[posIndex++];
+				geometry.vertices[vertexCount].position = vec4(x, y, z, 1);
+
+				if (hasNormals)
+				{
+					x = mesh.normals[normalIndex++];
+					y = mesh.normals[normalIndex++];
+					z = mesh.normals[normalIndex++];
+					geometry.vertices[vertexCount].normal = vec4(x, y, z, 1);
+				}
+
+				if (hasUVs)
+				{
+					x = mesh.texcoords[UVIndex++];
+					y = mesh.texcoords[UVIndex++];
+					geometry.vertices[vertexCount].UV = vec2(x, y);
+				}
+			}
+
+			geometry.indices = mesh.indices;
+		}
+	}
+	else if (ext == ".fbx")
+	{
+
+
+		FBXFile file;
+		success = file.load(path, FBXFile::UNITS_METER, false, false, false);
+		if (!success)
+		{
+			std::cout << "Error loading FBX file:\n";
+		}
+		else
+		{
+			//hardcoding to use single mesh, can loop here if needed.
+			FBXMeshNode* mesh = file.getMeshByIndex(0);
+			geometry.vertices.resize(mesh->m_vertices.size());
+
+			for (int i = 0; i < mesh->m_vertices.size(); i++)
+			{
+				auto xVert = mesh->m_vertices[i];
+				geometry.vertices[i].position = xVert.position;
+				geometry.vertices[i].color = xVert.colour;
+				geometry.vertices[i].normal = xVert.normal;
+				geometry.vertices[i].UV = xVert.texCoord1;
+			}
+
+			geometry.indices = mesh->m_indices;
+
+			file.unload();
+		}
+
+	}
+	else
+	{
+		std::cout << "Unsupported format. Only support .obj or .fbx files.\n";
+		success = false;
+	}
+	if (!success)
+	{
+		return false;
+	}
+
+	LoadModel(geometry);
+
+	return true;
+	*/
+
+
+	return uint();
+}
+
+void Cager::UpdateFlyCam()
+{
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_W) || Keyboard::IsKeyRepeat(Keyboard::KEY_W))
+	{
+		camera->Move(1);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_X) || Keyboard::IsKeyRepeat(Keyboard::KEY_X))
+	{
+		camera->Move(-1);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_A) || Keyboard::IsKeyRepeat(Keyboard::KEY_A))
+	{
+		camera->Slide(-1, 0);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_D) || Keyboard::IsKeyRepeat(Keyboard::KEY_D))
+	{
+		camera->Slide(1, 0);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_E) || Keyboard::IsKeyRepeat(Keyboard::KEY_E))
+	{
+		camera->Slide(0, 1);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_C) || Keyboard::IsKeyRepeat(Keyboard::KEY_C))
+	{
+		camera->Slide(0, -1);
+	}
 }

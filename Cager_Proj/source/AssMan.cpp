@@ -4,7 +4,6 @@ std::vector<Shader*> AssMan::shaders{ nullptr };
 std::vector<Context*> AssMan::windows{ nullptr };
 std::vector<RenderObject*> AssMan::renderObjects{ nullptr };
 
-
 bool AssMan::Init()
 {
 	//init glfw
@@ -154,9 +153,17 @@ uint AssMan::CreateRenderObject(Geometry& geometry)
 	return renderObjects.size() - 1;
 }
 
-void AssMan::DrawRenderObject(uint objectID)
+void AssMan::DrawRenderObject(uint objectID, bool wireframe)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (wireframe)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
 	glBindVertexArray(renderObjects[objectID]->vao);
 	glDrawElements(GL_TRIANGLES, renderObjects[objectID]->indexCount, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

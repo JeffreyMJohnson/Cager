@@ -95,7 +95,7 @@ public:
 
 	//render object
 	static uint CreateRenderObject(Geometry& geometry);
-	static void DrawRenderObject(uint objectID);
+	static void DrawRenderObject(uint objectID, bool wireframe);
 
 	//this is temp for refactor should be removed
 	static GLFWwindow* GetContextHandle(uint windowID);

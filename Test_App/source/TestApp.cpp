@@ -8,7 +8,7 @@ bool TestApp::StartUp()
 {
 	bool success = glf::Init(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, glm::vec4(.75f, .75f, .75f, 1));
 	
-	grid = glf::CreateGrid(25, 25);
+	grid = glf::CreateGrid(5,5);
 
 	return success;
 }

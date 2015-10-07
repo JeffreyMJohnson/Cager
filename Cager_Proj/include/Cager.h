@@ -14,6 +14,14 @@
 #include "AssMan.h"
 #include "camera\Camera.h"
 
+/*
+TODO:
+	rework keyboard input for some timing, switching is rough with fast frame rate
+	load game object from file
+	implement materials
+
+*/
+
 using glm::vec3;
 using glm::vec4;
 
@@ -51,15 +59,21 @@ public:
 	*/
 	static uint CreateGrid(const int rows, const int cols);
 
+	/*
+	Creates a gameobject from model data contained in given file and returns unique ID to reference.
+	Note:supports .fbx and .obj files only.
+	returns 0 if error.
+	*/
+	static uint CreateGameObjectFromFile(const char* path);
+
 
 private:
-
-
-
 	static const char* VERTEX_SHADER_PATH;
 	static const char* FRAGMENT_SHADER_PATH;
 	static uint shader;
 	static uint mainWindow;
 	static std::vector<GameObject*> gameObjects;
 	static Camera* camera;
+
+	static void UpdateFlyCam();
 };
