@@ -4,7 +4,6 @@ std::vector<Shader*> AssMan::shaders{ nullptr };
 std::vector<Context*> AssMan::windows{ nullptr };
 std::vector<RenderObject*> AssMan::renderObjects{ nullptr };
 
-
 bool AssMan::Init()
 {
 	//init glfw

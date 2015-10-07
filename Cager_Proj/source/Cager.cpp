@@ -41,8 +41,7 @@ bool Cager::Init(const int width, const int height, const char * title, const ve
 	camera->StartupPerspective(CAMERA_FOV, (float)width / height, CAMERA_NEAR, CAMERA_FAR);
 	camera->SetView(CAMERA_FROM, CAMERA_TO, CAMERA_UP);
 	//send uniform to shader now, will need to move to update for flycam.
-	AssMan::SetShaderUniform(shader, "ProjectionView", MAT4, glm::value_ptr(camera->GetViewProjection()));
-	//sShader->SetUniform("ProjectionView", Shader::MAT4, glm::value_ptr(sCamera->GetViewProjection()));
+	
 
 	return success;
 }
@@ -51,7 +50,8 @@ bool Cager::Update()
 {
 	if (AssMan::ContextShouldClose(mainWindow) || Keyboard::IsKeyPressed(Keyboard::KEY_ESCAPE))
 		return false;
-
+	UpdateFlyCam();
+	AssMan::SetShaderUniform(shader, "ProjectionView", MAT4, glm::value_ptr(camera->GetViewProjection()));
 	AssMan::Update();
 	return true;
 }
@@ -120,4 +120,32 @@ uint Cager::CreateGrid(const int rows, const int cols)
 	gameObj->renderObject = AssMan::CreateRenderObject(geometry);
 	gameObjects.push_back(gameObj);
 	return gameObjects.size() - 1;
+}
+
+void Cager::UpdateFlyCam()
+{
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_W) || Keyboard::IsKeyRepeat(Keyboard::KEY_W))
+	{
+		camera->Move(1);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_X) || Keyboard::IsKeyRepeat(Keyboard::KEY_X))
+	{
+		camera->Move(-1);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_A) || Keyboard::IsKeyRepeat(Keyboard::KEY_A))
+	{
+		camera->Slide(-1, 0);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_D) || Keyboard::IsKeyRepeat(Keyboard::KEY_D))
+	{
+		camera->Slide(1, 0);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_E) || Keyboard::IsKeyRepeat(Keyboard::KEY_E))
+	{
+		camera->Slide(0, 1);
+	}
+	if (Keyboard::IsKeyPressed(Keyboard::KEY_C) || Keyboard::IsKeyRepeat(Keyboard::KEY_C))
+	{
+		camera->Slide(0, -1);
+	}
 }

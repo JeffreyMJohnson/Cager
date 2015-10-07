@@ -53,13 +53,12 @@ public:
 
 
 private:
-
-
-
 	static const char* VERTEX_SHADER_PATH;
 	static const char* FRAGMENT_SHADER_PATH;
 	static uint shader;
 	static uint mainWindow;
 	static std::vector<GameObject*> gameObjects;
 	static Camera* camera;
+
+	static void UpdateFlyCam();
 };
